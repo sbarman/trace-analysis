@@ -27,14 +27,12 @@ import javax.swing.text.DefaultCaret;
 
 import kodkod.util.ints.IntSet;
 import sketch.entanglement.DynAngel;
-import sketch.entanglement.Event;
 import sketch.entanglement.SimpleEntanglementAnalysis;
 import sketch.entanglement.Trace;
 import sketch.entanglement.partition.TraceSubset;
 import sketch.entanglement.sat.SATEntanglementAnalysis;
 import sketch.entanglement.sat.SubtraceFilter;
 import sketch.entanglement.sat.TraceConverter;
-import sketch.entanglement.ui.program.ProgramDisplay;
 import entanglement.TraceDisplay;
 import entanglement.MaxSupportFinder;
 import entanglement.TraceSet;

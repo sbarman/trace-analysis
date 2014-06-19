@@ -11,8 +11,7 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JList;
 
-import sketch.entanglement.DynAngel;
-
+@SuppressWarnings("serial")
 public class DisentanglementGui<IdType, ValType, TraceType> extends DisentanglementGuiBase implements ActionListener {
 
     private List<IdType> idOrder;
@@ -52,7 +51,8 @@ public class DisentanglementGui<IdType, ValType, TraceType> extends Disentanglem
         refineButton.addActionListener(this);
     }
 
-    public void actionPerformed(ActionEvent event) {
+    @SuppressWarnings("unchecked")
+	public void actionPerformed(ActionEvent event) {
         if ("create".equals(event.getActionCommand())) {
             Object[] selected = chooseList.getSelectedValues();
             if (selected.length > 0) {
