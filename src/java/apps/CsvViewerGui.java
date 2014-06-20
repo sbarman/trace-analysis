@@ -22,7 +22,8 @@ public class CsvViewerGui {
 		
 		CsvDisplay display = new CsvDisplay();
 
-		EntanglementGui<String, String, CsvTrace> gui = new EntanglementGui<String, String, CsvTrace>(
+		EntanglementGui<Integer, String, CsvTrace> gui = 
+				new EntanglementGui<Integer, String, CsvTrace>(
 				sets, display);
 		
 		gui.pack();

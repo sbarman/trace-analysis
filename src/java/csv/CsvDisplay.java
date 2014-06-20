@@ -7,11 +7,11 @@ import javax.swing.JEditorPane;
 import entanglement.TraceDisplay;
 import entanglement.TraceSet;
 
-public class CsvDisplay implements TraceDisplay<String, String, CsvTrace> {
+public class CsvDisplay implements TraceDisplay<Integer, String, CsvTrace> {
 
 	@Override
 	public void setUpperPane(JEditorPane pane,
-			TraceSet<String, String, CsvTrace> traces, CsvTrace selected) {
+			TraceSet<Integer, String, CsvTrace> traces, CsvTrace selected) {
 		String out = "";
 		List<String> values = selected.values;
 		for (int i = 0, ii = values.size(); i < ii; ++i) {
@@ -22,7 +22,7 @@ public class CsvDisplay implements TraceDisplay<String, String, CsvTrace> {
 
 	@Override
 	public void setLowerPane(JEditorPane pane,
-			TraceSet<String, String, CsvTrace> traces, CsvTrace selected) {
+			TraceSet<Integer, String, CsvTrace> traces, CsvTrace selected) {
 		
 	}
 

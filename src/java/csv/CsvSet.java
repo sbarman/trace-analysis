@@ -22,7 +22,7 @@ import entanglement.trace.Traces;
 
 import misc.Tuple;
 
-public class CsvSet implements TraceSet<String, String, CsvTrace> {
+public class CsvSet implements TraceSet<Integer, String, CsvTrace> {
 	
 	public static Comparator<String> STR_INT = new Comparator<String>() {
         @Override
@@ -33,7 +33,7 @@ public class CsvSet implements TraceSet<String, String, CsvTrace> {
         }
     };
 	
-	protected final List<Tuple<String, ? extends List<String>>> idToDomain;
+	protected final List<Tuple<Integer, ? extends List<String>>> idToDomain;
 
 	public final int[] maxVals;
 	public final Set<List<Integer>> simpleTraces;
@@ -41,16 +41,16 @@ public class CsvSet implements TraceSet<String, String, CsvTrace> {
 	private Set<CsvTrace> traceData;
 
 	public CsvSet(Set<CsvTrace> traceData) {
-		idToDomain = new ArrayList<Tuple<String, ? extends List<String>>>();
+		idToDomain = new ArrayList<Tuple<Integer, ? extends List<String>>>();
 
 		this.traceData = traceData;
 
-		Set<Map<String, String>> traces = new HashSet<Map<String, String>>();
+		Set<Map<Integer, String>> traces = new HashSet<Map<Integer, String>>();
 		for (CsvTrace trace : traceData) {
 			traces.add(trace.mapping);
 		}
 
-		for (Map<String, String> trace : traces) {
+		for (Map<Integer, String> trace : traces) {
 			addToDomain(trace);
 		}
 
@@ -61,19 +61,19 @@ public class CsvSet implements TraceSet<String, String, CsvTrace> {
 		}
 
 		simpleTraces = new HashSet<List<Integer>>();
-		for (Map<String, String> trace : traces) {
+		for (Map<Integer, String> trace : traces) {
 			simpleTraces.add(getSimpleTrace(traceLength, trace));
 		}
 	}
 
 	protected List<Integer> getSimpleTrace(int traceLength,
-			Map<String, String> trace) {
+			Map<Integer, String> trace) {
 		List<Integer> simpleTrace = new ArrayList<Integer>(traceLength);
 		for (int i = 0; i < traceLength; ++i) {
 			simpleTrace.add(0);
 		}
 
-		for (String id : trace.keySet()) {
+		for (Integer id : trace.keySet()) {
 			int index = indexOf(id);
 			List<String> domain = idToDomain.get(index)._2;
 			simpleTrace.set(index, domain.indexOf(trace.get(id)));
@@ -81,20 +81,20 @@ public class CsvSet implements TraceSet<String, String, CsvTrace> {
 		return simpleTrace;
 	}
 
-	public int indexOf(String id) {
+	public int indexOf(Integer id) {
 		for (int i = 0, ii = idToDomain.size(); i < ii; ++i) {
-			String _id = idToDomain.get(i)._1;
+			Integer _id = idToDomain.get(i)._1;
 			if (_id.equals(id))
 				return i;
 		}
 		return -1;
 	}
 
-	protected void addToDomain(Map<String, String> trace) {
-		for (String key : trace.keySet()) {
+	protected void addToDomain(Map<Integer, String> trace) {
+		for (Integer key : trace.keySet()) {
 			int keyIndex = indexOf(key);
 			if (keyIndex == -1) {
-				idToDomain.add(new Tuple<String, List<String>>(key,
+				idToDomain.add(new Tuple<Integer, List<String>>(key,
 						new ArrayList<String>()));
 				keyIndex = idToDomain.size() - 1;
 			}
@@ -119,25 +119,25 @@ public class CsvSet implements TraceSet<String, String, CsvTrace> {
 	}
 	
 	@Override
-	public List<String> idOrder() {
-		List<String> ids = new ArrayList<String>();
-		for (Tuple<String, ? extends List<String>> idDomain : idToDomain) {
+	public List<Integer> idOrder() {
+		List<Integer> ids = new ArrayList<Integer>();
+		for (Tuple<Integer, ? extends List<String>> idDomain : idToDomain) {
 			ids.add(idDomain._1);
 		}
-		Collections.sort(ids, STR_INT);
+		Collections.sort(ids);
 		return ids;
 	}
 
 	@Override
-	public Set<Set<String>> getEntangledPartitions() {
+	public Set<Set<Integer>> getEntangledPartitions() {
 
 		Traces kodkodTraces = Traces.traces(maxVals, simpleTraces);
 		List<IntSet> entangledSets = EntanglementDetector
 				.entanglement(kodkodTraces);
 
-		Set<Set<String>> partitions = new HashSet<Set<String>>();
+		Set<Set<Integer>> partitions = new HashSet<Set<Integer>>();
 		for (IntSet set : entangledSets) {
-			Set<String> partition = new HashSet<String>();
+			Set<Integer> partition = new HashSet<Integer>();
 			IntIterator it = set.iterator();
 			while (it.hasNext()) {
 				partition.add(idToDomain.get(it.next())._1);
@@ -149,13 +149,13 @@ public class CsvSet implements TraceSet<String, String, CsvTrace> {
 	}
 
 	@Override
-	public Set<Map<String, String>> getValues(Set<String> partition) {
-		HashSet<Map<String, String>> values = new HashSet<Map<String, String>>();
+	public Set<Map<Integer, String>> getValues(Set<Integer> partition) {
+		HashSet<Map<Integer, String>> values = new HashSet<Map<Integer, String>>();
 		for (CsvTrace t : traceData) {
-			Map<String, String> trace = t.mapping;
+			Map<Integer, String> trace = t.mapping;
 
-			Map<String, String> subtrace = new HashMap<String, String>();
-			for (String id : partition) {
+			Map<Integer, String> subtrace = new HashMap<Integer, String>();
+			for (Integer id : partition) {
 				subtrace.put(id, trace.get(id));
 			}
 			values.add(subtrace);
@@ -165,8 +165,8 @@ public class CsvSet implements TraceSet<String, String, CsvTrace> {
 	}
 
 	@Override
-	public Set<Map<String, String>> getTraces() {
-		Set<Map<String, String>> mappings = new HashSet<Map<String, String>>();
+	public Set<Map<Integer, String>> getTraces() {
+		Set<Map<Integer, String>> mappings = new HashSet<Map<Integer, String>>();
 		for (CsvTrace trace : traceData) {
 			mappings.add(trace.mapping);
 		}
@@ -174,9 +174,9 @@ public class CsvSet implements TraceSet<String, String, CsvTrace> {
 	}
 
 	@Override
-	public CsvTrace getTrace(Map<String, String> mapping) {
+	public CsvTrace getTrace(Map<Integer, String> mapping) {
 		for (CsvTrace trace : traceData) {
-			Map<String, String> traceMap = trace.mapping;
+			Map<Integer, String> traceMap = trace.mapping;
 			if (traceMap.equals(mapping)) {
 				return trace;
 			}
@@ -185,19 +185,19 @@ public class CsvSet implements TraceSet<String, String, CsvTrace> {
 	}
 
 	@Override
-	public Set<TraceSet<String, String, CsvTrace>> getSupports(
-			Set<Set<String>> subpartitions) {
+	public Set<CsvSet> getSupports(
+			Set<Set<Integer>> subpartitions) {
 
-		Set<Set<String>> oldPartitions = getEntangledPartitions();
-		Set<Set<String>> newPartitions = new HashSet<Set<String>>();
+		Set<Set<Integer>> oldPartitions = getEntangledPartitions();
+		Set<Set<Integer>> newPartitions = new HashSet<Set<Integer>>();
 
 		// calculate the intersections of all oldPartitions and the new
 		// subpartitions
-		for (Set<String> oldPartition : oldPartitions) {
-			HashSet<String> partitionClone = new HashSet<String>(oldPartition);
-			for (Set<String> subpartition : subpartitions) {
-				HashSet<String> projection = new HashSet<String>();
-				for (String id : subpartition) {
+		for (Set<Integer> oldPartition : oldPartitions) {
+			HashSet<Integer> partitionClone = new HashSet<Integer>(oldPartition);
+			for (Set<Integer> subpartition : subpartitions) {
+				HashSet<Integer> projection = new HashSet<Integer>();
+				for (Integer id : subpartition) {
 					if (oldPartition.contains(id)) {
 						projection.add(id);
 					}
@@ -215,14 +215,14 @@ public class CsvSet implements TraceSet<String, String, CsvTrace> {
 		// convert the newPartitions to a List<IntSet>
 		List<IntSet> intSetPartitions = new ArrayList<IntSet>();
 
-		for (Set<String> partition : newPartitions) {
+		for (Set<Integer> partition : newPartitions) {
 			if (partition.size() == 1) {
 				intSetPartitions.add(Ints.singleton(indexOf(partition
 						.iterator().next())));
 			} else {
 				int maxValue = -1;
 				List<Integer> indexes = new ArrayList<Integer>();
-				for (String id : partition) {
+				for (Integer id : partition) {
 					int index = indexOf(id);
 					indexes.add(index);
 					if (index > maxValue) {
@@ -239,7 +239,7 @@ public class CsvSet implements TraceSet<String, String, CsvTrace> {
 
 		Traces kodkodTraces = Traces.traces(maxVals, simpleTraces);
 
-		Set<TraceSet<String, String, CsvTrace>> set = new HashSet<TraceSet<String, String, CsvTrace>>();
+		Set<CsvSet> set = new HashSet<CsvSet>();
 
 		for (Iterator<Traces> supports = MaxSupportFinder.findMaximalSupports(
 				kodkodTraces, intSetPartitions); supports.hasNext();) {
@@ -249,9 +249,9 @@ public class CsvSet implements TraceSet<String, String, CsvTrace> {
 			for (Iterator<entanglement.trace.Trace> it = support.iterator(); it
 					.hasNext();) {
 				entanglement.trace.Trace t = it.next();
-				Map<String, String> mapping = new HashMap<String, String>();
+				Map<Integer, String> mapping = new HashMap<Integer, String>();
 				for (int j = 0; j < t.length(); j++) {
-					Tuple<String, ? extends List<String>> idDomain = idToDomain
+					Tuple<Integer, ? extends List<String>> idDomain = idToDomain
 							.get(j);
 					mapping.put(idDomain._1, idDomain._2.get(t.get(j)));
 				}

@@ -20,7 +20,7 @@ public interface TraceSet<IdType, ValType, TraceType> {
 
 	TraceType getTrace(Map<IdType, ValType> mapping);
 
-	Set<TraceSet<IdType, ValType, TraceType>> getSupports(
+	Set<? extends TraceSet<IdType, ValType, TraceType>> getSupports(
 			Set<Set<IdType>> subpartitioning);
 
 }
