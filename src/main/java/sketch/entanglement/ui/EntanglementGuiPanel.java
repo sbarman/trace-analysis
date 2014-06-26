@@ -1,5 +1,6 @@
 package sketch.entanglement.ui;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,6 +36,7 @@ import sketch.entanglement.sat.SubtraceFilter;
 import sketch.entanglement.sat.TraceConverter;
 import entanglement.TraceDisplay;
 import entanglement.MaxSupportFinder;
+import entanglement.TraceMisc;
 import entanglement.TraceSet;
 import entanglement.trace.Traces;
 
@@ -95,8 +97,8 @@ public class EntanglementGuiPanel<IdType, ValType, TraceType> extends Entangleme
     }
 
 	private void addSummary() {
-        PartitionSummaryPanel panel =
-                new PartitionSummaryPanel(this.traces.idOrder());
+        PartitionSummaryPanel<IdType, ValType, TraceType> panel =
+                new PartitionSummaryPanel<>(this.traces);
         JScrollPane entanglementPane = getEntanglementPane();
         entanglementPane.getViewport().add(panel);
     }
@@ -108,6 +110,7 @@ public class EntanglementGuiPanel<IdType, ValType, TraceType> extends Entangleme
         JScrollPane partitionPane = getPartitionPane();
         JPanel partitionPanePanel = new JPanel();
         partitionPanePanel.setLayout(new BoxLayout(partitionPanePanel, BoxLayout.Y_AXIS));
+        partitionPanePanel.setMaximumSize(new Dimension(100, 200));
 
         partitionPane.getViewport().add(partitionPanePanel);
 
@@ -170,8 +173,8 @@ public class EntanglementGuiPanel<IdType, ValType, TraceType> extends Entangleme
 
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    DisentanglementGui gui =
-                            new DisentanglementGui(parent, traces.idOrder());
+                    DisentanglementGui<IdType, ValType, TraceType> gui =
+                            new DisentanglementGui<>(parent, traces.idOrder());
                     gui.setVisible(true);
                 }
             });
@@ -260,28 +263,26 @@ public class EntanglementGuiPanel<IdType, ValType, TraceType> extends Entangleme
 
         // newGui.pack();
         // newGui.setVisible(true);
-
+    	
+    	// get the supports
         List<TraceSet<IdType, ValType, TraceType>> s = 
         		new ArrayList<TraceSet<IdType, ValType, TraceType>>(traces.getSupports(subpartitioning));
+    	
+        // lets filter by the good and bad traces as marked
+		final List<Set<Map<IdType, ValType>>> goodTraces = new ArrayList<>();
+		final List<Set<Map<IdType, ValType>>> badTraces = new ArrayList<>();
+
+		for (PartitionPanel<IdType, ValType, TraceType> panel : partitionPanels) {
+			goodTraces.add(panel.getGoodTraces());
+			badTraces.add(panel.getBadTraces());
+		}
+		
+		List<TraceSet<IdType, ValType, TraceType>> filtered = TraceMisc.filterTraceSets(s, goodTraces, badTraces);
+
         EntanglementGui<IdType, ValType, TraceType> gui =
-                new EntanglementGui<IdType, ValType, TraceType>(s, display);
+                new EntanglementGui<IdType, ValType, TraceType>(filtered, display);
         gui.setVisible(true);
     }
-
-//    private boolean goodSubset(List<Trace> subsetTraces, Set<Trace> goodSubtraces) {
-//        for (Trace goodTrace : goodSubtraces) {
-//            Set<DynAngel> angels = goodTrace.getAngels();
-//            for (Trace trace : subsetTraces) {
-//                if (trace.getSubTrace(angels).equals(goodTrace)) {
-//                    continue;
-//                } else {
-//                    return false;
-//                }
-//            }
-//        }
-//
-//        return true;
-//    }
 
     public Frame getFrame() {
         return gui;

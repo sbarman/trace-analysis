@@ -193,7 +193,7 @@ public class CsvAnalysis {
 
 	public static void main(String[] args) {
 		CsvImport im = new CsvImport("SODA.csv");	
-		CsvSet traces = new CsvSet(im.traces);
+		CsvSet traces = new CsvSet(im.traces, "base");
 		CsvAnalysis csv = new CsvAnalysis(traces, System.out);
 		csv.outputTracesInfo(csv.original);
 		

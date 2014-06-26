@@ -26,7 +26,7 @@ public class CsvImport {
 				traces.add(new CsvTrace("" + lineNum, values));
 			}
 		} catch (IOException e) {
-			// do nothing
+			System.out.println(e);
 		}
 	}
 }

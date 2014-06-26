@@ -10,16 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import kodkod.util.ints.IntBitSet;
 import kodkod.util.ints.IntIterator;
 import kodkod.util.ints.IntSet;
 import kodkod.util.ints.Ints;
-
 import entanglement.EntanglementDetector;
 import entanglement.MaxSupportFinder;
 import entanglement.TraceSet;
 import entanglement.trace.Traces;
-
 import misc.Tuple;
 
 public class CsvSet implements TraceSet<Integer, String, CsvTrace> {
@@ -38,12 +38,18 @@ public class CsvSet implements TraceSet<Integer, String, CsvTrace> {
 	public final int[] maxVals;
 	public final Set<List<Integer>> simpleTraces;
 
-	private Set<CsvTrace> traceData;
+	public final Set<CsvTrace> traceData;
+	private final String name;
 
 	public CsvSet(Set<CsvTrace> traceData) {
-		idToDomain = new ArrayList<Tuple<Integer, ? extends List<String>>>();
-
+		this(traceData, "");
+	}
+	
+	public CsvSet(Set<CsvTrace> traceData, String name) {
 		this.traceData = traceData;
+		this.name = name;
+
+		idToDomain = new ArrayList<Tuple<Integer, ? extends List<String>>>();
 
 		Set<Map<Integer, String>> traces = new HashSet<Map<Integer, String>>();
 		for (CsvTrace trace : traceData) {
@@ -110,7 +116,7 @@ public class CsvSet implements TraceSet<Integer, String, CsvTrace> {
 
 	@Override
 	public String getName() {
-		return "";
+		return name;
 	}
 
 	@Override
@@ -257,8 +263,46 @@ public class CsvSet implements TraceSet<Integer, String, CsvTrace> {
 				}
 				traces.add(getTrace(mapping));
 			}
-			set.add(new CsvSet(traces));
+			set.add(new CsvSet(traces, name + ":" + CsvSet.getPartitionString(subpartitions) ));
 		}
 		return set;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof CsvSet))
+			return false;
+		CsvSet other = (CsvSet) o;
+		return this.traceData.equals(other.traceData);
+	}
+
+	public static String getPartitionString(Set<Set<Integer>> partitions) {
+		List<List<Integer>> partitionsList = convertPartitionSet(partitions);
+		
+		List<String> partitionStrings = new ArrayList<>(); 
+		for (List<Integer> partition : partitionsList) {
+			partitionStrings.add(StringUtils.join(partition, " "));
+		}
+		return StringUtils.join(partitionStrings, " | ");
+	}
+	
+	private static List<List<Integer>> convertPartitionSet(Set<Set<Integer>> partitions) {
+		List<List<Integer>> partitionsList = new ArrayList<>();
+		for (Set<Integer> partition : partitions) {
+			List<Integer> partitionList = new ArrayList<>(partition);
+			Collections.sort(partitionList);
+			partitionsList.add(partitionList);
+		}
+		Collections.sort(partitionsList, new Comparator<List<Integer>>() {
+		    @Override
+	        public int compare(List<Integer> l1, List<Integer> l2) {
+	        	if (l1.isEmpty())
+	        		return -1;
+	        	if (l2.isEmpty())
+	        		return 1;
+	        	return l1.get(0) - l2.get(0);
+	        }
+		});
+		return partitionsList;
 	}
 }
