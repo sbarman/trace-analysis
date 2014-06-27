@@ -108,9 +108,11 @@ public class PartitionPanel<IdType, ValType, TraceType> extends JPanel implement
     private JLabel label;
     private PartitionListModel model;
     private Vector<ValueListElement> listValues;
+	private Set<IdType> partition;
 
     public PartitionPanel(Set<IdType> partition, TraceSet<IdType, ValType, TraceType> traces) {
         ids = traces.idOrder();
+        this.partition = partition;
         
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -122,12 +124,16 @@ public class PartitionPanel<IdType, ValType, TraceType> extends JPanel implement
     }
 
     private void addLabel(JPanel panel) {
+    	Set<IdType> partition = this.partition;
+    	
         String text = "Choose: ";
         for (int i = 0; i < ids.size(); i++) {
-            text += ids.get(i);
-            if (i != ids.size() - 1) {
-                text += ",";
-            }
+        	IdType id = ids.get(i);
+        	
+        	if (partition.contains(id)) {
+	            text += id + " ";
+	                
+	        }
         }
         label = new JLabel(text);
         label.setAlignmentX(JLabel.LEFT_ALIGNMENT);

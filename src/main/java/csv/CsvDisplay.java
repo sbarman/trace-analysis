@@ -23,7 +23,12 @@ public class CsvDisplay implements TraceDisplay<Integer, String, CsvTrace> {
 	@Override
 	public void setLowerPane(JEditorPane pane,
 			TraceSet<Integer, String, CsvTrace> traces, CsvTrace selected) {
-		
+		String out = "";
+		List<String> values = selected.values;
+		for (int i = 0, ii = values.size(); i < ii; ++i) {
+			out += values.get(i);
+		}
+		pane.setText(out);	
 	}
 
 }

@@ -23,6 +23,7 @@ public class EntanglementGui<IdType, ValType, TraceType> extends EntanglementGui
         super();
         this.display = display;
         tabbedPane = getTabbedPane();
+        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
         removeTabButton = getRemoveTabButton();
         removeTabButton.setActionCommand("removeTab");
