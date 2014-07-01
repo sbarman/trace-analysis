@@ -38,8 +38,8 @@ public class TraceMisc {
 				for (Map<IdType, ValType> fullTrace : fullTraces) {
 					boolean matched = true;
 					for (IdType key : subtrace.keySet()) {
-						if (!subtrace.get(key).equals(
-								fullTrace.getOrDefault(key, null))) {
+						
+						if (!subtrace.get(key).equals(fullTrace.get(key))) {
 							matched = false;
 							break;
 						}
