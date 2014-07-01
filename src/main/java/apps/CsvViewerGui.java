@@ -16,7 +16,7 @@ public class CsvViewerGui {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		CsvImport im = new CsvImport("SODA.csv");	
+		CsvImport im = new CsvImport(args[0]);	
 		openGui(new CsvSet(im.traces));
 	}
 	
