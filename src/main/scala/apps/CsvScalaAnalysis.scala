@@ -174,5 +174,7 @@ class CsvScalaAnalysis(traces: List[CsvTrace]) {
 object CsvScalaAnalysis {
   def main(args: Array[String]) {
     val csv = new CsvScalaAnalysis("SODA.csv");
+    
+	CsvScalaSet.openGui(List(csv.original))
   }
 }

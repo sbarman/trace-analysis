@@ -38,6 +38,7 @@ class SensorLabelAnalysis(csvFile: String, labelFile: String) {
     var remainingTraces = traces
     var traceTokenization = Map[CsvTrace, List[List[Int]]]()
     var iterations = 0
+    var numViewed = 0
     
     while (!remainingTraces.isEmpty) {
       iterations += 1
@@ -87,6 +88,7 @@ class SensorLabelAnalysis(csvFile: String, labelFile: String) {
     var remainingTraces = traces
     var traceTokenization = Map[CsvTrace, List[List[Int]]]()
     var iterations = 0
+    var numViewed = List[Set[Int]]()
     
     while (!remainingTraces.isEmpty) {
       iterations += 1
@@ -114,6 +116,12 @@ class SensorLabelAnalysis(csvFile: String, labelFile: String) {
       println("Supports:" + supports.supports.map(s => s.size))
             
       supports.supports.foreach(support => {
+        val subTraceCounts = csvAnalysis.splitToPartition(token.tokenStartsList).map(p => {
+          val v = support.getValues(p);
+          v.size
+        })
+        numViewed = numViewed :+ subTraceCounts
+        
         support.set.traceData.toList.foreach(trace => {
           if (!traceTokenization.contains(trace)) {
             traceTokenization = traceTokenization + (trace -> List(origSplits))
@@ -131,7 +139,7 @@ class SensorLabelAnalysis(csvFile: String, labelFile: String) {
  
     printTokenizationQuality(traceTokenization)
     
-    (iterations, traceTokenization)
+    (iterations, numViewed, traceTokenization)
   }
   
   def printTokenizationQuality(traceTokenization: Map[CsvTrace, List[List[Int]]]) {

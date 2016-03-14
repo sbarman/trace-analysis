@@ -3,10 +3,9 @@ package apps
 object analysis {
 	import apps.CsvScalaAnalysis
 	
-	val csv = new CsvScalaAnalysis("/Users/sbarman/Projects/trace-analysis/entanglement/SODA.csv")
-                                                  //> csv  : apps.CsvScalaAnalysis = apps.CsvScalaAnalysis@e350b40
-	val info = csv.getSplitInfo(2)            //> Spliting on:Set(Set(1), Set(0))
-                                                  //| java.lang.UnsatisfiedLinkError: Could not load the library libminisat.dylib 
+	val csv = new CsvScalaAnalysis("/Users/sbarman/Dropbox/Projects/modular-oracles/code/trace-analysis/entanglement/SODA.csv")
+                                                  //> csv  : apps.CsvScalaAnalysis = apps.CsvScalaAnalysis@2794eab6
+	val info = csv.getSplitInfo(2)            //> java.lang.UnsatisfiedLinkError: Could not load the library libminisat.dylib 
                                                   //| or any of its variants.
                                                   //| 	at kodkod.engine.satlab.NativeSolver.loadLibrary(NativeSolver.java:75)
                                                   //| 	at kodkod.engine.satlab.MiniSat.<clinit>(MiniSat.java:39)
@@ -21,7 +20,8 @@ object analysis {
                                                   //| 	at kodkod.engine.Solver.solveAll(Solver.java:179)
                                                   //| 	at entanglement.MaxBicliqueEnumerator$2.<init>(MaxBicliqueEnumerator.jav
                                                   //| a:194)
-                                                  //| 	at entanglement.MaxBicliqueEnumerator.maxSupports(
+                                                  //| 	at entanglement.MaxBicliqueEnumerator.maxSupports(MaxBicliqueEnumerator.
+                                                  //| java:193)
                                                   //| Output exceeds cutoff limit.
 	
 	val sorted = info.flatMap(f => f.supports).sortWith((x, y) => x.size > y.size)

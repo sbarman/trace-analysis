@@ -55,7 +55,7 @@ public class EntanglementGuiPanelBase extends javax.swing.JPanel {
 
         debugPanel.setBorder(null);
 
-        debugLabel.setText("Debug Output");
+        debugLabel.setText("Output");
 
         debugEditorPane.setContentType("text/html");
         debugScrollPane.setViewportView(debugEditorPane);
@@ -79,7 +79,7 @@ public class EntanglementGuiPanelBase extends javax.swing.JPanel {
 
         splitPane.setRightComponent(verticalSplitPane);
 
-        frameLabel.setText("Plans");
+        frameLabel.setText("Attribute Partitioning");
 
         refineTraceButton.setText("Disentangle by Traces");
 

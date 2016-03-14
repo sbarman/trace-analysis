@@ -88,6 +88,7 @@ public class EntanglementGuiPanel<IdType, ValType, TraceType> extends Entangleme
         refineButton.addActionListener(this);
 
         refineButton = getRefineTraceButton();
+        refineButton.hide();
         refineButton.setActionCommand("refineTrace");
         refineButton.addActionListener(this);
 

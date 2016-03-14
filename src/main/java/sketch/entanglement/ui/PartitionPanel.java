@@ -126,7 +126,7 @@ public class PartitionPanel<IdType, ValType, TraceType> extends JPanel implement
     private void addLabel(JPanel panel) {
     	Set<IdType> partition = this.partition;
     	
-        String text = "Choose: ";
+        String text = "Attributes: ";
         for (int i = 0; i < ids.size(); i++) {
         	IdType id = ids.get(i);
         	
@@ -147,7 +147,7 @@ public class PartitionPanel<IdType, ValType, TraceType> extends JPanel implement
             listValues.add(new ValueListElement(value));
         }
 
-        label.setText("[" + listValues.size() + "]" + label.getText());
+        label.setText("[" + listValues.size() + "X" + partition.size() + "]" + label.getText());
 
         model = new PartitionListModel(listValues);
         list = new JList(model);
